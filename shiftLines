@@ -1,0 +1,60 @@
+#!/bin/bash
+# Reads in a file containing test data or multiple lines
+# where each each line is circularly shifted by removing
+# the first word and appending it to the end of the line.
+
+# File specified by the user.
+DataFile="$1"
+
+# Check for number of arguments passesd to bash script.
+# There should only be one, the specified file.
+if [[ $# != 1 ]]
+then
+	echo "Incorrect number of arguments."
+	exit 1;
+fi
+
+# Produce a message if the specified does not actually exist.
+if [[ ! -f $DataFile ]]
+then
+	echo "File $DataFile was not found."
+	exit 1;
+fi
+
+# Get the first word in the line.
+Front() {
+    echo $1
+}
+
+# Shifts all the arguments over by one and
+# displays the remaining arguments or word.
+Back() {
+    shift
+    echo $*
+}
+
+# Circular shift creates the shifted string by utilizing
+# the above functions front and back.
+CircularShift() {
+    Line=("$@")
+    Length=${#Line[@]}
+	NextLine=${Line[@]}
+	
+	# Iterate until every possible shifted solution is shown.
+    for ((i=0; i < Length; i++))
+    do
+        echo $NextLine
+		
+		# Shift the array over by one by placing the first
+		# word at the back.
+		NextLine="$(Back ${NextLine[@]}) $(Front ${NextLine[@]})"
+    done
+}
+
+# Read in line by line including the last line and create a
+# circular shift and display the result.
+while IFS='' read -r Line || [[ -n "$Line" ]]; 
+do
+    CircularShift ${Line[@]}
+    unset Line
+done < "$DataFile"
