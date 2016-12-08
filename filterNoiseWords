@@ -1,0 +1,38 @@
+#!/bin/bash
+# Filter out lines based on the first word.
+# Each line is compared against a list of noise words
+# that should not be included in the output.
+
+# Specified noise file.
+NoiseFile="$1"
+
+# Check for number of arguments passesd to bash script.
+# There should only be one, the specified file.
+if [[ $# != 1 ]]
+then
+	echo "Incorrect number of arguments."
+	exit 1;
+fi
+
+# Produce a message if the specified does not actually exist.
+if [[ ! -f $NoiseFile ]]
+then
+	echo "File $NoiseFile was not found."
+	exit 1;
+fi
+
+# Read in the piped lines.
+while read line
+do
+	# Determine the first word for each line.
+	FirstWord=$(echo $line[@] | awk '{print $1}')
+	
+	# Compare the first word in the line against a list of
+	# noise words that should not be included in the output.
+	if ! grep -q "$FirstWord" $NoiseFile
+	then
+		echo $line
+	fi
+	
+	unset line
+done
