@@ -1,7 +1,0 @@
-#!/bin/bash
-# Generate a report.
-
-
-
-InputFile=$(echo !-1^)
-echo $InputFile

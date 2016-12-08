@@ -1,0 +1,25 @@
+#!/bin/bash
+# Generate a report and sort alphabetically removing duplicates.
+
+OutputFile="$1"
+
+# Check for number of arguments passesd to bash script.
+# There should only be one, the specified file.
+if [[ $# != 1 ]]
+then
+	echo "Expected usage: ./createReport <OutputFile>."
+	exit 1;
+fi
+
+# If the file currently exist, remove it.
+rm -rf "$OutputFile"
+
+# Loop through each line and output it to a file.
+while read -r Line
+do
+    echo "$Line" >> "$OutputFile"
+done
+
+# With that new output file, sort each line alphabetically and
+# remove any duplicate entries.
+sort -u "$OutputFile" -o "$OutputFile"

@@ -10,7 +10,7 @@ NoiseFile="$1"
 # There should only be one, the specified file.
 if [[ $# != 1 ]]
 then
-	echo "Incorrect number of arguments."
+	echo "Expected usage: ./filterNoiseWords <NoiseFile>."
 	exit 1;
 fi
 
