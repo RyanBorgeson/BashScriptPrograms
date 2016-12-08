@@ -14,7 +14,7 @@ then
 	exit 1;
 fi
 
-# Produce a message if the specified does not actually exist.
+# Produce a message if the specified file does not actually exist.
 if [[ ! -f $NoiseFile ]]
 then
 	echo "File $NoiseFile was not found."

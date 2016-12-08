@@ -14,7 +14,7 @@ then
 	exit 1;
 fi
 
-# Produce a message if the specified does not actually exist.
+# Produce a message if the specified file does not exist.
 if [[ ! -f $DataFile ]]
 then
 	echo "File $DataFile was not found."

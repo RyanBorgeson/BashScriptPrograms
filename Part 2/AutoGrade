@@ -1,0 +1,73 @@
+#!/bin/bash
+# Program that extracts student files from a downloaded zip file
+# and creates a data directory with each students attempt. Each students
+# program is run using the make command.
+
+# Redirect the output of each make command into the report file.
+exec > Report.txt 2>&1
+
+# Get the zip file and data directory from the arguments.
+ZipFile="$1"
+DataDirectory="$2"
+
+# Check to see if there are at least two arguments.
+if [[ $# != 2 ]]
+then
+	echo "Expected usage: ./AutoGrade ZipFile DataDirectory."
+	exit 1;
+fi
+
+# Produce a message if the specified file does not exist.
+if [[ ! -f $ZipFile ]]
+then
+	echo "File $ZipFile was not found."
+	exit 1;
+fi
+
+# Remove the specified directory it exists.
+# This will allow the program to save new files.
+if [ -d $DataDirectory ]
+then
+    rm -r $DataDirectory
+fi
+
+# Quietly extract files into the data directory.
+unzip -qq $ZipFile -d $DataDirectory
+
+
+# Move into the data directly that has the newly
+# unziped files.
+cd $DataDirectory
+
+# Select the files only associated with each students attempt.
+# Loop through each file pulling out the name, new file name, 
+# and date.
+Files=*attempt*
+for File in $Files
+do
+
+	# Grab the file name and student.
+    FileName=$(echo $File | cut -d_ -f5)
+    Student=$(echo $File | cut -d_ -f2)
+	
+	# If a filename cannot be extracted, assume the file name
+	# to be memo.txt.
+    if [[ ! $FileName ]]
+    then
+        FileName='memo.txt'
+    fi
+	
+	# Create the students directory and move files.
+    mkdir -p "$Student/"
+    mv "$File" "$Student/$FileName"
+done
+
+# Loop through all the directories/files and and run the make
+# command on each of them. Output from the make command will be stored
+# in Report.txt.
+Directories=*
+for Directory in $Directories
+do
+    make -f ../../makefile -C "$Directory"
+    make test -f ../../makefile -C "$Directory"
+done
